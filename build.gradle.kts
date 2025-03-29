@@ -1,9 +1,12 @@
 plugins {
-    `kotlin-dsl`
     `java-gradle-plugin`
+    `kotlin-dsl`
     `maven-publish`
-    kotlin("jvm") version "1.9.22"
+    id("org.jetbrains.kotlin.jvm") version "1.9.10"
 }
+
+group = "com.example"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -12,45 +15,37 @@ repositories {
 
 dependencies {
     implementation(gradleApi())
-    implementation(kotlin("stdlib"))
-    implementation(kotlin("reflect"))
-
-    // Kotlin Compiler Analysis Dependencies
-    implementation("org.jetbrains.kotlin:kotlin-compiler:1.9.22")
-
-    // JSON serialization
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.20")
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.20")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20")
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // Testing
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.20")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.20")
     testImplementation(gradleTestKit())
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
 gradlePlugin {
     plugins {
-        create("kotlinProjectAnalyzer") {
-            id = "com.example.kotlinprojectanalyzer"
-            implementationClass = "com.example.KotlinProjectAnalyzerPlugin"
+        create("kotlinStructureAnalyzerPlugin") {
+            id = "com.example.kotlin-structure-analyzer"
+            implementationClass = "com.example.KotlinStructureAnalyzerPlugin"
         }
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
+// Optional: Configure publishing if you want to publish to a repository
 publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.example"
-            artifactId = "kotlin-project-analyzer"
-            version = "1.0.0"
+    repositories {
+        maven {
+            name = "localRepo"
+            url = uri(layout.buildDirectory.dir("repo"))
         }
     }
 }
 
-kotlin {
-    jvmToolchain(11)
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "20"
+    }
 }
-
