@@ -1,8 +1,6 @@
 package com.example
 
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.fileProperty
-import org.gradle.kotlin.dsl.property
 
 open class KotlinStructureAnalyzerExtension(project: Project) {
     val outputFile = project.objects.fileProperty().convention(

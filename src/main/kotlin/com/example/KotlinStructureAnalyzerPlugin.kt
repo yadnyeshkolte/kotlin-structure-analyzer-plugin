@@ -1,3 +1,5 @@
+package com.example
+
 import com.example.KotlinStructure
 import com.example.KotlinStructureAnalyzerExtension
 import com.example.ClassStructure
@@ -23,6 +25,7 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
 import java.io.File
 import com.google.gson.GsonBuilder
+import java.util.*
 
 class KotlinStructureAnalyzerPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -188,7 +191,7 @@ class KotlinStructureAnalyzerPlugin : Plugin<Project> {
     private fun outputStructure(structures: List<KotlinStructure>, outputFile: File, format: String) {
         outputFile.parentFile?.mkdirs()
 
-        when (format.toLowerCase()) {
+        when (format.lowercase(Locale.getDefault())) {
             "json" -> {
                 val gson = GsonBuilder().setPrettyPrinting().create()
                 outputFile.writeText(gson.toJson(structures))

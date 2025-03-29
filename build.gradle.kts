@@ -2,7 +2,7 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
-    id("org.jetbrains.kotlin.jvm") version "1.9.10"
+    id("org.jetbrains.kotlin.jvm") version "2.0.21"
 }
 
 group = "com.example"
@@ -15,13 +15,14 @@ repositories {
 
 dependencies {
     implementation(gradleApi())
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.20")
-    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.20")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0") // Latest Kotlin
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0") // Latest Kotlin Compiler
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0") // Latest Kotlin Gradle Plugin
+    implementation("com.google.code.gson:gson:2.10.1") // Latest Gson
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.20")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.20")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.0") // Latest Kotlin Test
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.0.0") // Latest Kotlin JUnit Test
+    testImplementation("junit:junit:4.13.2")
     testImplementation(gradleTestKit())
 }
 
@@ -41,11 +42,5 @@ publishing {
             name = "localRepo"
             url = uri(layout.buildDirectory.dir("repo"))
         }
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "20"
     }
 }
