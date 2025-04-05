@@ -1,4 +1,4 @@
-package com.example
+package com.yadnyeshkolte
 
 import org.gradle.api.Project
 

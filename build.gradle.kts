@@ -29,8 +29,8 @@ dependencies {
 gradlePlugin {
     plugins {
         create("kotlinStructureAnalyzerPlugin") {
-            id = "com.example.kotlin-structure-analyzer"
-            implementationClass = "com.example.KotlinStructureAnalyzerPlugin"
+            id = "com.yadnyeshkolte.kotlin-structure-analyzer"
+            implementationClass = "com.yadnyeshkolte.KotlinStructureAnalyzerPlugin"
         }
     }
 }

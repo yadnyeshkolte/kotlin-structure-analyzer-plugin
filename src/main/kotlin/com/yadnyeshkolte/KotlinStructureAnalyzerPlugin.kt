@@ -1,4 +1,4 @@
-package com.example
+package com.yadnyeshkolte
 
 import com.google.gson.GsonBuilder
 import org.gradle.api.Plugin

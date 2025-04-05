@@ -1,4 +1,4 @@
-package com.example
+package com.yadnyeshkolte
 
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -8,7 +8,6 @@ import org.junit.rules.TemporaryFolder
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import com.example.KotlinStructureAnalyzerPlugin
 
 class KotlinStructureAnalyzerPluginTest {
 
@@ -32,7 +31,7 @@ class KotlinStructureAnalyzerPluginTest {
         buildFile.writeText("""
             plugins {
                 id("org.jetbrains.kotlin.jvm") version "1.9.20"
-                id("com.example.kotlin-structure-analyzer")
+                id("com.yadnyeshkolte.kotlin-structure-analyzer")
             }
             
             repositories {
@@ -58,10 +57,10 @@ class KotlinStructureAnalyzerPluginTest {
         """.trimIndent())
 
         // Create Kotlin source file for analysis
-        val sourceDir = testProjectDir.newFolder("src", "main", "kotlin", "com", "example")
+        val sourceDir = testProjectDir.newFolder("src", "main", "kotlin", "com", "yadnyeshkolte")
         val sourceFile = File(sourceDir, "TestClass.kt")
         sourceFile.writeText("""
-            package com.example
+            package com.yadnyeshkolte
             
             data class TestDataClass(
                 val name: String,
@@ -118,7 +117,7 @@ class KotlinStructureAnalyzerPluginTest {
         buildFile.writeText("""
             plugins {
                 id("org.jetbrains.kotlin.jvm") version "1.9.20"
-                id("com.example.kotlin-structure-analyzer")
+                id("com.yadnyeshkolte.kotlin-structure-analyzer")
             }
             
             repositories {
@@ -144,10 +143,10 @@ class KotlinStructureAnalyzerPluginTest {
         """.trimIndent())
 
         // Create simple Kotlin source file
-        val sourceDir = testProjectDir.newFolder("src", "main", "kotlin", "com", "example")
+        val sourceDir = testProjectDir.newFolder("src", "main", "kotlin", "com", "yadnyeshkolte")
         val sourceFile = File(sourceDir, "Simple.kt")
         sourceFile.writeText("""
-            package com.example
+            package com.yadnyeshkolte
             
             class SimpleClass {
                 fun doSomething() {}

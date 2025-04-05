@@ -1,4 +1,4 @@
-package com.example
+package com.yadnyeshkolte
 
 data class ClassStructure(
     val name: String,
