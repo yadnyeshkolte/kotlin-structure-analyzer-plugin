@@ -3,15 +3,17 @@ package com.example
 import com.google.gson.GsonBuilder
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.file.FileTree
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
 import org.jetbrains.kotlin.com.intellij.psi.PsiFileFactory
-import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
@@ -20,15 +22,10 @@ import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import java.io.File
 import java.util.*
+import org.jetbrains.kotlin.config.CompilerConfiguration
 
 class KotlinStructureAnalyzerPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        // First check if Kotlin plugin is applied
-        if (!project.plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
-            project.logger.warn("Kotlin plugin not found. KotlinStructureAnalyzerPlugin requires the Kotlin plugin to be applied.")
-            return
-        }
-
         // Define an extension for the plugin configuration
         val extension = project.extensions.create<KotlinStructureAnalyzerExtension>("kotlinStructureAnalyzer")
 
@@ -38,11 +35,14 @@ class KotlinStructureAnalyzerPlugin : Plugin<Project> {
             description = "Analyzes the structure of Kotlin source files in the project"
 
             doLast {
+                // Collect all Kotlin files in the project, regardless of source set structure
                 val sourceFiles = collectKotlinSourceFiles(project)
                 if (sourceFiles.isEmpty()) {
                     logger.warn("No Kotlin source files found in the project.")
                     return@doLast
                 }
+
+                logger.lifecycle("Found ${sourceFiles.size} Kotlin source files to analyze.")
 
                 val structures = analyzeKotlinFiles(sourceFiles)
                 val outputFile = extension.outputFile.get().asFile
@@ -51,35 +51,97 @@ class KotlinStructureAnalyzerPlugin : Plugin<Project> {
             }
         }
 
-        // Make the task depend on compilation to ensure source files are up to date
+        // Make the task depend on all compile tasks to ensure source files are up to date
         project.afterEvaluate {
-            project.tasks.findByName("compileKotlin")?.let { compileTask ->
+            // Find all compile tasks, including those in subprojects
+            val compileTaskNames = project.tasks.names.filter {
+                it.startsWith("compile") && (it.contains("Kotlin") || it.contains("kotlin"))
+            }
+
+            if (compileTaskNames.isNotEmpty()) {
                 analyzeTask.configure {
-                    dependsOn(compileTask)
+                    dependsOn(compileTaskNames)
                 }
+                logger.debug("Added dependencies on compile tasks: $compileTaskNames")
+            } else {
+                logger.debug("No Kotlin compile tasks found")
             }
         }
     }
 
     private fun collectKotlinSourceFiles(project: Project): List<File> {
         val sourceFiles = mutableListOf<File>()
+        val processedProjects = mutableSetOf<Project>()
 
-        // Get the source sets from Java plugin extension
-        val javaExtension = project.extensions.findByType(JavaPluginExtension::class.java)
-        if (javaExtension != null) {
-            val mainSourceSet = javaExtension.sourceSets.findByName("main")
-            mainSourceSet?.let { sourceSet ->
-                // Find all Kotlin source directories
-                val kotlinSrcDirs = sourceSet.allSource.srcDirs.filter { it.exists() }
+        // Function to collect Kotlin files from a project and its subprojects
+        fun collectFromProject(proj: Project) {
+            if (proj in processedProjects) return
+            processedProjects.add(proj)
 
-                // Collect .kt files
-                kotlinSrcDirs.forEach { dir ->
-                    dir.walk().filter { it.isFile && it.extension == "kt" }.forEach {
-                        sourceFiles.add(it)
+            project.logger.debug("Collecting Kotlin source files from project: ${proj.name}")
+
+            // Try multiple approaches to find Kotlin source files
+
+            // 1. Try to get source sets from Java or Kotlin plugins
+            try {
+                val sourceSets = proj.extensions.findByName("sourceSets") as? SourceSetContainer
+                sourceSets?.forEach { sourceSet ->
+                    project.logger.debug("Processing source set: ${sourceSet.name}")
+
+                    // Get Kotlin source directories
+                    val kotlinDirs = sourceSet.allSource.srcDirs.filter { it.exists() }
+
+                    // Collect all .kt files
+                    kotlinDirs.forEach { dir ->
+                        project.logger.debug("Scanning directory: ${dir.absolutePath}")
+                        dir.walk()
+                            .filter { it.isFile && it.extension == "kt" }
+                            .forEach { sourceFiles.add(it) }
+                    }
+                }
+            } catch (e: Exception) {
+                project.logger.debug("Could not access sourceSets: ${e.message}")
+            }
+
+            // 2. If no source files found, try to find Kotlin files directly
+            if (sourceFiles.isEmpty()) {
+                project.logger.debug("No source files found via source sets, trying direct file search")
+
+                // Collect all .kt files in src directory
+                val srcDir = proj.file("src")
+                if (srcDir.exists()) {
+                    srcDir.walk()
+                        .filter { it.isFile && it.extension == "kt" }
+                        .forEach { sourceFiles.add(it) }
+                }
+
+                // Look for Kotlin files in specific common directories
+                listOf(
+                    "src/main/kotlin",
+                    "src/commonMain/kotlin",
+                    "src/androidMain/kotlin",
+                    "src/iosMain/kotlin",
+                    "src/desktopMain/kotlin",
+                    "src/jsMain/kotlin",
+                    "src/jvmMain/kotlin"
+                ).forEach { path ->
+                    val dir = proj.file(path)
+                    if (dir.exists()) {
+                        dir.walk()
+                            .filter { it.isFile && it.extension == "kt" }
+                            .forEach { sourceFiles.add(it) }
                     }
                 }
             }
+
+            // 3. Process subprojects as well
+            proj.subprojects.forEach { subproject ->
+                collectFromProject(subproject)
+            }
         }
+
+        // Start collection from root project
+        collectFromProject(project)
 
         return sourceFiles
     }
