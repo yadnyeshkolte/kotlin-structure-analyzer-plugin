@@ -3,11 +3,8 @@ package com.example
 import com.google.gson.GsonBuilder
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.file.FileTree
-import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
@@ -62,7 +59,7 @@ class KotlinStructureAnalyzerPlugin : Plugin<Project> {
                 analyzeTask.configure {
                     dependsOn(compileTaskNames)
                 }
-                logger.debug("Added dependencies on compile tasks: $compileTaskNames")
+                logger.debug("Added dependencies on compile tasks: {}", compileTaskNames)
             } else {
                 logger.debug("No Kotlin compile tasks found")
             }
