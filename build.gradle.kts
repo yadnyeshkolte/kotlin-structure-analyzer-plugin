@@ -2,9 +2,10 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
+    id("com.gradle.plugin-publish") version "1.0.0"
 }
 
-group = "com.example"
+group = "com.yadnyeshkolte"
 version = "1.0.0"
 
 repositories {
