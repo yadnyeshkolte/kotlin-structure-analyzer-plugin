@@ -1,20 +1,10 @@
 package com.example
 
-import com.example.KotlinStructure
-import com.example.KotlinStructureAnalyzerExtension
-import com.example.ClassStructure
-import com.example.FunctionStructure
-import com.example.ParameterStructure
-import com.example.PropertyStructure
+import com.google.gson.GsonBuilder
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.kotlin.dsl.*
-import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.kotlin.psi.KtProperty
-import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
+import org.gradle.kotlin.dsl.create
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
@@ -23,8 +13,12 @@ import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
 import org.jetbrains.kotlin.com.intellij.psi.PsiFileFactory
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
+import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtProperty
+import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import java.io.File
-import com.google.gson.GsonBuilder
 import java.util.*
 
 class KotlinStructureAnalyzerPlugin : Plugin<Project> {

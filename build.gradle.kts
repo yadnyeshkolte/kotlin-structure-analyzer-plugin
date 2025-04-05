@@ -2,7 +2,6 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
-    id("org.jetbrains.kotlin.jvm") version "2.0.21"
 }
 
 group = "com.example"
@@ -25,6 +24,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation(gradleTestKit())
 }
+
 
 gradlePlugin {
     plugins {
