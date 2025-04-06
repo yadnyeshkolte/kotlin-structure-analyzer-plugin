@@ -5,7 +5,7 @@ plugins {
     id("com.gradle.plugin-publish") version "1.2.1"
 }
 
-group = "com.yadnyeshkolte"
+group = "io.github.yadnyeshkolte"
 version = "1.0.0"
 
 repositories {
@@ -26,16 +26,15 @@ dependencies {
     testImplementation(gradleTestKit())
 }
 
-
 gradlePlugin {
     website.set("https://github.com/yadnyeshkolte/kotlin-structure-analyzer-plugin")
     vcsUrl.set("https://github.com/yadnyeshkolte/kotlin-structure-analyzer-plugin.git")
     plugins {
         create("kotlinStructureAnalyzerPlugin") {
-            id = "com.yadnyeshkolte.kotlin-structure-analyzer"
+            id = "io.github.yadnyeshkolte.kotlin-structure-analyzer"
             displayName = "Kotlin Structure Analyzer"
             description = "Analyzes the structure of Kotlin source files in Gradle projects"
-            implementationClass = "com.yadnyeshkolte.KotlinStructureAnalyzerPlugin"
+            implementationClass = "io.github.yadnyeshkolte.KotlinStructureAnalyzerPlugin"
             tags.set(listOf("kotlin", "analysis", "structure"))
         }
     }

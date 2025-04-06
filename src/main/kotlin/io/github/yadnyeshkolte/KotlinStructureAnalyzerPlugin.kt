@@ -1,6 +1,7 @@
-package com.yadnyeshkolte
+package io.github.yadnyeshkolte
 
 import com.google.gson.GsonBuilder
+import io.github.yadnyeshkolte.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSetContainer

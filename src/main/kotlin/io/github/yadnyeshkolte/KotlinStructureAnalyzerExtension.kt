@@ -1,4 +1,4 @@
-package com.yadnyeshkolte
+package io.github.yadnyeshkolte
 
 import org.gradle.api.Project
 

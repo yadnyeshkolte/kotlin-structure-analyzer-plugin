@@ -1,4 +1,4 @@
-package com.yadnyeshkolte
+package io.github.yadnyeshkolte
 
 data class ParameterStructure(
     val name: String,

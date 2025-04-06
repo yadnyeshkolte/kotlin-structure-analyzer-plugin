@@ -1,4 +1,4 @@
-package com.yadnyeshkolte
+package io.github.yadnyeshkolte
 
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -31,7 +31,7 @@ class KotlinStructureAnalyzerPluginTest {
         buildFile.writeText("""
             plugins {
                 id("org.jetbrains.kotlin.jvm") version "1.9.20"
-                id("com.yadnyeshkolte.kotlin-structure-analyzer")
+                id("io.github.yadnyeshkolte.kotlin-structure-analyzer")
             }
             
             repositories {
@@ -60,7 +60,7 @@ class KotlinStructureAnalyzerPluginTest {
         val sourceDir = testProjectDir.newFolder("src", "main", "kotlin", "com", "yadnyeshkolte")
         val sourceFile = File(sourceDir, "TestClass.kt")
         sourceFile.writeText("""
-            package com.yadnyeshkolte
+            package io.github.yadnyeshkolte
             
             data class TestDataClass(
                 val name: String,
@@ -117,7 +117,7 @@ class KotlinStructureAnalyzerPluginTest {
         buildFile.writeText("""
             plugins {
                 id("org.jetbrains.kotlin.jvm") version "1.9.20"
-                id("com.yadnyeshkolte.kotlin-structure-analyzer")
+                id("io.github.yadnyeshkolte.kotlin-structure-analyzer")
             }
             
             repositories {
@@ -146,7 +146,7 @@ class KotlinStructureAnalyzerPluginTest {
         val sourceDir = testProjectDir.newFolder("src", "main", "kotlin", "com", "yadnyeshkolte")
         val sourceFile = File(sourceDir, "Simple.kt")
         sourceFile.writeText("""
-            package com.yadnyeshkolte
+            package io.github.yadnyeshkolte
             
             class SimpleClass {
                 fun doSomething() {}
