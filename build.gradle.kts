@@ -2,16 +2,17 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
-    id("com.gradle.plugin-publish") version "1.2.1"
+    id("com.gradle.plugin-publish") version "1.3.1"
 }
 
-group = "io.github.yadnyeshkolte"
-version = "1.0.0"
 
 repositories {
     mavenCentral()
     gradlePluginPortal()
 }
+
+version = "1.0.0"
+group = "io.github.yadnyeshkolte"
 
 dependencies {
     implementation(gradleApi())
@@ -32,9 +33,9 @@ gradlePlugin {
     plugins {
         create("kotlinStructureAnalyzerPlugin") {
             id = "io.github.yadnyeshkolte.kotlin-structure-analyzer"
+            implementationClass = "io.github.yadnyeshkolte.KotlinStructureAnalyzerPlugin"
             displayName = "Kotlin Structure Analyzer"
             description = "Analyzes the structure of Kotlin source files in Gradle projects"
-            implementationClass = "io.github.yadnyeshkolte.KotlinStructureAnalyzerPlugin"
             tags.set(listOf("kotlin", "analysis", "structure"))
         }
     }
